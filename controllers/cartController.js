@@ -62,28 +62,3 @@ exports.removeFromCart = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-
-exports.updateFromCart = async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const productId = req.params.productId;
-        const { quantity } = req.body;
-
-        const cart = await Cart.findOne({ user: userId });
-        if (!cart) {
-            return res.status(404).json({ message: 'Cart not found' });
-        }
-
-        const cartItem = cart.cartItems.find(item => item.product.toString() === productId);
-        if (!cartItem) {
-            return res.status(404).json({ message: 'Cart item not found' });
-        }
-
-        cartItem.quantity = quantity;
-        await cart.save();
-
-        res.json(cart);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
